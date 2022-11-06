@@ -1,6 +1,8 @@
-import React, { useReducer } from 'react';
+import React, { useReducer, useState } from 'react';
 import TodoReducer, { todoReducer } from './TodoReducer';
-
+import { TodoItem } from './TodoItem';
+import { TodoList } from './TodoList';
+import { TodoAdd } from './TodoAdd';
 const initialState = [
   {
     id: new Date().getTime(),
@@ -15,7 +17,19 @@ const initialState = [
 ];
 
 export const TodoApp = () => {
-  const [state, dispatch] = useReducer(todoReducer, initialState);
+  //const [state, dispatch] = useReducer(todoReducer, initialState);
+  const [state, setState] = useState(initialState);
+  const onAddHandler = (objeto) => {
+    setState([objeto, ...state]);
+  };
+  const onBorrarHandler = (id) => {
+    console.log('Esta corriendo esto');
+    setState((prevState) => {
+      const updatedState = prevState.filter((item) => item.id !== id);
+      return updatedState;
+    });
+  };
+
   return (
     <>
       <h1 className="text-center mt-3">
@@ -24,30 +38,12 @@ export const TodoApp = () => {
       <hr />
       <div className="row">
         <div className="col-7">
-          <ul className="list-group">
-            <li className="list-group-item  d-flex justify-content-between">
-              <span className="align-self-center">item 1</span>
-              <button className="btn btn-danger">Borrar</button>
-            </li>
-            <li className="list-group-item  d-flex justify-content-between">
-              <span className="align-self-center">item 2</span>
-              <button className="btn btn-danger">Borrar</button>
-            </li>
-            <li className="list-group-item  d-flex justify-content-between">
-              <span className="align-self-center">item 3</span>
-              <button className="btn btn-danger">Borrar</button>
-            </li>
-          </ul>
+          <TodoList list={state} onBorrarItem={onBorrarHandler} />
         </div>
         <div className="col-5">
           <h4>Agregar TODO</h4>
           <hr />
-          <form action="">
-            <input type="text" className="form-control mb-2" />
-            <button type="submit" className="btn btn-outline-primary mt-1">
-              Agregar
-            </button>
-          </form>
+          <TodoAdd onAddTask={onAddHandler} />
         </div>
       </div>
     </>
